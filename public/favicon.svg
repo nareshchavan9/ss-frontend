@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F83F6" />
+      <stop offset="50%" stop-color="#6B5CFF" />
+      <stop offset="100%" stop-color="#863BFF" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="#0B1C30" />
+  <!-- Elegant 'S' monogram representing Sanchar Sati connection & travel -->
+  <path d="M 140 360 C 140 220, 240 180, 256 256 C 272 332, 372 292, 372 152" stroke="url(#grad)" stroke-width="48" stroke-linecap="round" fill="none" />
+  <circle cx="140" cy="360" r="32" fill="#4F83F6" />
+  <circle cx="372" cy="152" r="32" fill="#863BFF" />
+</svg>
