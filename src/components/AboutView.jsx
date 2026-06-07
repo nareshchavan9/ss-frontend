@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function AboutView() {
   return (
-    <main className="pt-0 pb-section-gap bg-background text-on-background">
+    <main className="pt-[110px] pb-section-gap bg-background text-on-background">
       {/* Hero Header */}
-      <section className="relative h-[460px] flex items-center justify-center overflow-hidden pt-[80px]">
+      <section className="relative h-[380px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             alt="Luxury Resort Lobby" 
