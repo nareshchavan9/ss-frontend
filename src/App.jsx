@@ -10,7 +10,7 @@ import DashboardView from './components/DashboardView';
 import AboutView from './components/AboutView';
 import ContactView from './components/ContactView';
 
-const BACKEND_URL = 'http://localhost:5000/api/v1';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(() => {
