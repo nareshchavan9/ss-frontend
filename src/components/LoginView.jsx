@@ -13,7 +13,7 @@ export default function LoginView({ onLogin, onNavigate }) {
     <div 
       className="min-h-screen w-full flex items-center justify-center p-4 md:p-8 bg-cover bg-center relative"
       style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1920&q=80')"
+        backgroundImage: "url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80')"
       }}
     >
       {/* Dark tint overlay */}
