@@ -23,7 +23,7 @@ export default function ContactView({ showToast }) {
   };
 
   return (
-    <main className="pt-[110px] pb-section-gap bg-background text-on-background">
+    <main className="pt-[73px] pb-section-gap bg-background text-on-background">
       {/* Hero Header */}
       <section className="relative h-[280px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">

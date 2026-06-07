@@ -183,9 +183,9 @@ export default function ExploreView({ onSelectHotel, showToast }) {
   };
 
   return (
-    <>
+    <main className="pt-[73px] bg-background text-on-background">
       {/* Hero Section */}
-      <header className="relative h-[921px] min-h-[600px] flex items-center justify-center overflow-hidden">
+      <header className="relative h-[calc(100vh-73px)] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             alt="Mountain Resort" 
@@ -430,6 +430,6 @@ export default function ExploreView({ onSelectHotel, showToast }) {
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }

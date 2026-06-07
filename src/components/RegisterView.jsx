@@ -33,33 +33,33 @@ export default function RegisterView({ onRegister, onNavigate }) {
         className="absolute top-6 left-6 z-20 cursor-pointer select-none"
         onClick={() => onNavigate('explore')}
       >
-        <svg width="150" height="60" viewBox="0 0 150 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-md">
+        <svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-md">
           {/* Dotted path */}
           <path 
-            d="M 12 38 C 30 10, 80 15, 110 18 C 122 19, 138 23, 142 16" 
+            d="M 12 38 C 45 10, 110 15, 175 18 C 195 19, 220 23, 228 16" 
             stroke="white" 
             strokeWidth="1.5" 
             strokeDasharray="4 4" 
             strokeLinecap="round" 
           />
           {/* Airplane */}
-          <g transform="translate(141, 15) rotate(-15)">
+          <g transform="translate(227, 15) rotate(-15)">
             <path 
               d="M0,0 L-5,-1.5 L-4,-4 L-1,-3 L1,-6.5 L2.5,-6.5 L1,-3 L4,-2 L5,-4 L6.5,-4 L5,-1.5 L6.5,0 L5,0.8 L3.5,0.8 Z" 
               fill="white" 
             />
           </g>
-          {/* TRAVEL Text */}
+          {/* SANCHAR SATI Text */}
           <text 
             x="5" 
             y="52" 
             fill="white" 
-            fontSize="32" 
+            fontSize="26" 
             fontWeight="900" 
             fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" 
-            letterSpacing="1.5"
+            letterSpacing="1"
           >
-            TRAVEL
+            SANCHAR SATI
           </text>
         </svg>
       </div>
