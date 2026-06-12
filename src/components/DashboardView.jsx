@@ -1270,6 +1270,33 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
     }
   };
 
+  const handleRemovePhoto = async () => {
+    if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
+    try {
+      const token = localStorage.getItem('accessToken');
+      showToast('Removing profile photo...', false);
+      const response = await fetch(`${BACKEND_URL}/auth/profile/avatar`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setProfilePhoto('');
+        if (onUpdateUser) {
+          onUpdateUser(data.data);
+        }
+        showToast('Profile photo removed successfully!', false);
+      } else {
+        showToast(data.message || 'Failed to remove photo.', true);
+      }
+    } catch (error) {
+      showToast('Error removing photo.', true);
+    }
+  };
+
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     if (!profileName.trim() || !profileEmail.trim()) {
@@ -1306,7 +1333,7 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
     }
   };
 
-  const handleUpdatePassword = (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (!currPassword || !newPassword || !confirmPassword) {
       showToast('All password fields are required.', true);
@@ -1320,10 +1347,33 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       showToast('New password must be at least 6 characters.', true);
       return;
     }
-    showToast('Password updated successfully!', false);
-    setCurrPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`${BACKEND_URL}/auth/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: currPassword,
+          newPassword: newPassword
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        showToast('Password updated successfully!', false);
+        setCurrPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        showToast(data.message || 'Failed to update password.', true);
+      }
+    } catch (error) {
+      showToast('Error updating password.', true);
+    }
   };
 
   const displayName = user ? user.name : 'Julian Vance';
@@ -1594,6 +1644,16 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                           onChange={handlePhotoUpload} 
                           className="hidden"
                         />
+                        {profilePhoto && (
+                          <button
+                            type="button"
+                            onClick={handleRemovePhoto}
+                            className="px-4 py-2 border border-red-200 text-red-600 font-interactive text-xs rounded hover:bg-red-50 transition-all flex items-center gap-2 cursor-pointer font-bold"
+                          >
+                            <span className="material-symbols-outlined text-sm">delete</span>
+                            <span>Remove Photo</span>
+                          </button>
+                        )}
                       </div>
                       <p className="text-[10px] text-on-surface-variant">PNG, JPG or GIF. Max 5MB.</p>
                     </div>
