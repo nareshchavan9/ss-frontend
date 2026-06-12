@@ -8,14 +8,20 @@ export default function RegisterView({ onRegister, onNavigate }) {
   const [showPassword, setShowPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [newsletter, setNewsletter] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!termsAccepted) {
       alert('You must accept the Terms of Service and Privacy Policy.');
       return;
     }
-    onRegister(name, email, password, role);
+    setLoading(true);
+    try {
+      await onRegister(name, email, password, role);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -98,22 +104,25 @@ export default function RegisterView({ onRegister, onNavigate }) {
             <div className="flex bg-white/10 p-1 rounded-xl mb-4 border border-white/10">
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => setRole('USER')}
-                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer ${role === 'USER' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
+                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 ${loading ? 'opacity-65 cursor-not-allowed' : 'cursor-pointer'} ${role === 'USER' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
               >
                 Traveler
               </button>
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => setRole('HOTEL_OWNER')}
-                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer ${role === 'HOTEL_OWNER' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
+                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 ${loading ? 'opacity-65 cursor-not-allowed' : 'cursor-pointer'} ${role === 'HOTEL_OWNER' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
               >
                 Host / Owner
               </button>
               <button
                 type="button"
+                disabled={loading}
                 onClick={() => setRole('ADMIN')}
-                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer ${role === 'ADMIN' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
+                className={`flex-1 text-center py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 ${loading ? 'opacity-65 cursor-not-allowed' : 'cursor-pointer'} ${role === 'ADMIN' ? 'bg-white text-[#0B1C30] shadow-sm' : 'text-white/85 hover:text-white'}`}
               >
                 Admin
               </button>
@@ -130,10 +139,11 @@ export default function RegisterView({ onRegister, onNavigate }) {
                     id="full_name"
                     type="text"
                     required
+                    disabled={loading}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your name"
-                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 px-4 text-xs placeholder:text-[#0B1C30]/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all"
+                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 px-4 text-xs placeholder:text-[#0B1C30]/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -148,10 +158,11 @@ export default function RegisterView({ onRegister, onNavigate }) {
                     id="email"
                     type="email"
                     required
+                    disabled={loading}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 px-4 text-xs placeholder:text-[#0B1C30]/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all"
+                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 px-4 text-xs placeholder:text-[#0B1C30]/50 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -166,15 +177,17 @@ export default function RegisterView({ onRegister, onNavigate }) {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     required
+                    disabled={loading}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 pl-4 pr-10 text-xs placeholder:text-[#0B1C30]/40 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all"
+                    className="w-full bg-white text-[#0B1C30] border border-white/20 rounded-xl py-2.5 pl-4 pr-10 text-xs placeholder:text-[#0B1C30]/40 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                   <button
                     type="button"
+                    disabled={loading}
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0B1C30]/60 hover:text-[#0B1C30] transition-colors cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#0B1C30]/60 hover:text-[#0B1C30] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined text-[16px]">
                       {showPassword ? 'visibility_off' : 'visibility'}
@@ -185,24 +198,26 @@ export default function RegisterView({ onRegister, onNavigate }) {
 
               {/* Checkboxes Section */}
               <div className="space-y-2 pt-1 select-none">
-                <label className="flex items-start gap-2.5 cursor-pointer group">
+                <label className={`flex items-start gap-2.5 group ${loading ? 'opacity-65 cursor-not-allowed' : 'cursor-pointer'}`}>
                   <input
                     type="checkbox"
+                    disabled={loading}
                     checked={newsletter}
                     onChange={(e) => setNewsletter(e.target.checked)}
-                    className="mt-0.5 w-3.5 h-3.5 border-white/20 text-[#4F83F6] focus:ring-blue-400 rounded-sm cursor-pointer"
+                    className="mt-0.5 w-3.5 h-3.5 border-white/20 text-[#4F83F6] focus:ring-blue-400 rounded-sm disabled:cursor-not-allowed"
                   />
                   <span className="text-[10px] leading-tight text-white/80 group-hover:text-white transition-colors">
                     I wish to receive curated travel inspiration and exclusive offers.
                   </span>
                 </label>
-                <label className="flex items-start gap-2.5 cursor-pointer group">
+                <label className={`flex items-start gap-2.5 group ${loading ? 'opacity-65 cursor-not-allowed' : 'cursor-pointer'}`}>
                   <input
                     type="checkbox"
                     required
+                    disabled={loading}
                     checked={termsAccepted}
                     onChange={(e) => setTermsAccepted(e.target.checked)}
-                    className="mt-0.5 w-3.5 h-3.5 border-white/20 text-[#4F83F6] focus:ring-blue-400 rounded-sm cursor-pointer"
+                    className="mt-0.5 w-3.5 h-3.5 border-white/20 text-[#4F83F6] focus:ring-blue-400 rounded-sm disabled:cursor-not-allowed"
                   />
                   <span className="text-[10px] leading-tight text-white/80 group-hover:text-white transition-colors">
                     I agree to the{' '}
@@ -221,9 +236,20 @@ export default function RegisterView({ onRegister, onNavigate }) {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#4F83F6] hover:bg-[#3b6fd8] text-white font-bold text-xs py-3 rounded-xl transition-all duration-300 shadow-md active:scale-[0.99] cursor-pointer uppercase tracking-wider"
+                  disabled={loading}
+                  className="w-full bg-[#4F83F6] hover:bg-[#3b6fd8] disabled:bg-[#4F83F6]/60 disabled:cursor-not-allowed text-white font-bold text-xs py-3 rounded-xl transition-all duration-300 shadow-md active:scale-[0.99] cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
                 >
-                  Create Account
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Creating Account...</span>
+                    </>
+                  ) : (
+                    'Create Account'
+                  )}
                 </button>
               </div>
 
@@ -237,7 +263,8 @@ export default function RegisterView({ onRegister, onNavigate }) {
               {/* Google Signup */}
               <button
                 type="button"
-                className="w-full bg-white/10 hover:bg-white/15 border border-white/20 rounded-xl py-2.5 px-4 text-xs text-white transition-all flex items-center justify-center gap-2 cursor-pointer font-medium"
+                disabled={loading}
+                className="w-full bg-white/10 hover:bg-white/15 border border-white/20 rounded-xl py-2.5 px-4 text-xs text-white transition-all flex items-center justify-center gap-2 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <img
                   alt="Google"
@@ -253,8 +280,8 @@ export default function RegisterView({ onRegister, onNavigate }) {
               <p className="text-xs text-white/80">
                 Already have an account?{' '}
                 <a
-                  onClick={() => onNavigate('login')}
-                  className="text-white font-bold hover:underline cursor-pointer ml-1"
+                  onClick={() => !loading && onNavigate('login')}
+                  className={`text-white font-bold hover:underline ml-1 ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   Sign In
                 </a>

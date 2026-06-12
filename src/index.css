@@ -52,3 +52,9 @@
   display: flex;
   align-items: center;
 }
+
+/* Hide standard Edge/IE password reveal and clear buttons to avoid duplicate icons */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
