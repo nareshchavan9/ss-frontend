@@ -131,6 +131,12 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
   const [profilePhone, setProfilePhone] = useState(user && user.phone ? user.phone : '');
   const [profilePhoto, setProfilePhoto] = useState(user && user.avatar ? user.avatar : '');
 
+  // Loading states for profile actions
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isRemovingPhoto, setIsRemovingPhoto] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
   // Host listing state variables
   const [hostHotels, setHostHotels] = useState([]);
   const [reservationsList, setReservationsList] = useState([]);
@@ -1244,6 +1250,7 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
     const formData = new FormData();
     formData.append('avatar', file);
 
+    setIsUploadingPhoto(true);
     try {
       const token = localStorage.getItem('accessToken');
       showToast('Uploading profile photo...', false);
@@ -1267,11 +1274,14 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       }
     } catch (error) {
       showToast('Error uploading photo.', true);
+    } finally {
+      setIsUploadingPhoto(false);
     }
   };
 
   const handleRemovePhoto = async () => {
     if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
+    setIsRemovingPhoto(true);
     try {
       const token = localStorage.getItem('accessToken');
       showToast('Removing profile photo...', false);
@@ -1294,6 +1304,8 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       }
     } catch (error) {
       showToast('Error removing photo.', true);
+    } finally {
+      setIsRemovingPhoto(false);
     }
   };
 
@@ -1304,6 +1316,7 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       return;
     }
 
+    setIsSavingProfile(true);
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`${BACKEND_URL}/auth/profile`, {
@@ -1330,6 +1343,8 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       }
     } catch (error) {
       showToast('Error updating profile.', true);
+    } finally {
+      setIsSavingProfile(false);
     }
   };
 
@@ -1348,6 +1363,7 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       return;
     }
 
+    setIsUpdatingPassword(true);
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`${BACKEND_URL}/auth/password`, {
@@ -1373,6 +1389,8 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
       }
     } catch (error) {
       showToast('Error updating password.', true);
+    } finally {
+      setIsUpdatingPassword(false);
     }
   };
 
@@ -1632,10 +1650,22 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                       <div className="flex items-center gap-3">
                         <label 
                           htmlFor="avatar-upload" 
-                          className="px-4 py-2 border border-outline text-on-surface font-interactive text-xs rounded hover:bg-surface-container transition-all flex items-center gap-2 cursor-pointer font-bold"
+                          className={`px-4 py-2 border border-outline text-on-surface font-interactive text-xs rounded hover:bg-surface-container transition-all flex items-center gap-2 font-bold ${isUploadingPhoto ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                         >
-                          <span className="material-symbols-outlined text-sm">upload</span>
-                          <span>Upload Photo</span>
+                          {isUploadingPhoto ? (
+                            <>
+                              <svg className="animate-spin h-3.5 w-3.5 text-on-surface" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              <span>Uploading...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-sm">upload</span>
+                              <span>Upload Photo</span>
+                            </>
+                          )}
                         </label>
                         <input 
                           type="file" 
@@ -1643,15 +1673,29 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                           accept="image/*"
                           onChange={handlePhotoUpload} 
                           className="hidden"
+                          disabled={isUploadingPhoto || isRemovingPhoto}
                         />
                         {profilePhoto && (
                           <button
                             type="button"
                             onClick={handleRemovePhoto}
-                            className="px-4 py-2 border border-red-200 text-red-600 font-interactive text-xs rounded hover:bg-red-50 transition-all flex items-center gap-2 cursor-pointer font-bold"
+                            disabled={isRemovingPhoto || isUploadingPhoto}
+                            className="px-4 py-2 border border-red-200 text-red-600 font-interactive text-xs rounded hover:bg-red-50 transition-all flex items-center gap-2 cursor-pointer font-bold disabled:opacity-60 disabled:cursor-not-allowed"
                           >
-                            <span className="material-symbols-outlined text-sm">delete</span>
-                            <span>Remove Photo</span>
+                            {isRemovingPhoto ? (
+                              <>
+                                <svg className="animate-spin h-3.5 w-3.5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Removing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="material-symbols-outlined text-sm">delete</span>
+                                <span>Remove Photo</span>
+                              </>
+                            )}
                           </button>
                         )}
                       </div>
@@ -1666,8 +1710,9 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                         type="text" 
                         value={profileName} 
                         onChange={(e) => setProfileName(e.target.value)} 
-                        className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                        className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all disabled:bg-surface-container-low/50 disabled:text-on-surface-variant/70"
                         required 
+                        disabled={isSavingProfile}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -1676,8 +1721,9 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                         type="email" 
                         value={profileEmail} 
                         onChange={(e) => setProfileEmail(e.target.value)} 
-                        className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                        className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all disabled:bg-surface-container-low/50 disabled:text-on-surface-variant/70"
                         required 
+                        disabled={isSavingProfile}
                       />
                     </div>
                   </div>
@@ -1688,16 +1734,28 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                       type="text" 
                       value={profilePhone} 
                       onChange={(e) => setProfilePhone(e.target.value)} 
-                      className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" 
+                      className="w-full border border-outline-variant/50 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all disabled:bg-surface-container-low/50 disabled:text-on-surface-variant/70" 
+                      disabled={isSavingProfile}
                     />
                   </div>
 
                   <div className="pt-2 border-t border-outline-variant/20 flex justify-end">
                     <button 
                       type="submit" 
-                      className="px-6 py-2.5 bg-primary text-white text-xs rounded hover:opacity-90 font-bold cursor-pointer"
+                      disabled={isSavingProfile}
+                      className="px-6 py-2.5 bg-primary text-white text-xs rounded hover:opacity-90 font-bold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
                     >
-                      Save Changes
+                      {isSavingProfile ? (
+                        <>
+                          <svg className="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Saving Changes...</span>
+                        </>
+                      ) : (
+                        'Save Changes'
+                      )}
                     </button>
                   </div>
                 </form>
@@ -1717,8 +1775,9 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                         type="password" 
                         value={currPassword} 
                         onChange={(e) => setCurrPassword(e.target.value)} 
-                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none" 
+                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none disabled:bg-surface-container-low/50" 
                         required 
+                        disabled={isUpdatingPassword}
                       />
                     </div>
                     <div className="space-y-1">
@@ -1727,8 +1786,9 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                         type="password" 
                         value={newPassword} 
                         onChange={(e) => setNewPassword(e.target.value)} 
-                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none" 
+                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none disabled:bg-surface-container-low/50" 
                         required 
+                        disabled={isUpdatingPassword}
                       />
                     </div>
                     <div className="space-y-1">
@@ -1737,15 +1797,27 @@ export default function DashboardView({ user, onNavigate, showToast, onUpdateUse
                         type="password" 
                         value={confirmPassword} 
                         onChange={(e) => setConfirmPassword(e.target.value)} 
-                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none" 
+                        className="w-full border border-outline-variant/50 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-primary outline-none disabled:bg-surface-container-low/50" 
                         required 
+                        disabled={isUpdatingPassword}
                       />
                     </div>
                     <button 
                       type="submit" 
-                      className="w-full py-2 bg-secondary text-white text-xs rounded hover:opacity-90 font-bold cursor-pointer mt-2"
+                      disabled={isUpdatingPassword}
+                      className="w-full py-2 bg-secondary text-white text-xs rounded hover:opacity-90 font-bold cursor-pointer mt-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      Update Password
+                      {isUpdatingPassword ? (
+                        <>
+                          <svg className="animate-spin h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Updating...</span>
+                        </>
+                      ) : (
+                        'Update Password'
+                      )}
                     </button>
                   </form>
                 </div>
